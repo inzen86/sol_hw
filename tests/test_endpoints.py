@@ -154,7 +154,6 @@ def test_update_order_status(client):
 
 
 def test_add_products_to_order(client):
-    from pprint import pprint
     response = client.post('/api/orders')
     new_order_id = response.json['id']
 

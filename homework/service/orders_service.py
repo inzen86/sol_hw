@@ -1,5 +1,5 @@
-from homework.repository.orders import OrdersRepository
 from homework.repository.model.order import Order, OrderProduct
+from homework.repository.orders import OrdersRepository
 
 
 class OrderService:

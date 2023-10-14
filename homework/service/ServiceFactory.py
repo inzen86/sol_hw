@@ -7,4 +7,3 @@
 #         OtherService.init(self.connection, productSerivce)
 #
 #         OtherService.getInstance()
-

@@ -58,7 +58,7 @@ class OrdersRepository:
 
     def update_quantity(self, order_id, product_uuid, quantity):
         cursor = self.connection.execute('update order_products set quantity = ? where order_id = ? and id = ?',
-                                (quantity, order_id, product_uuid))
+                                         (quantity, order_id, product_uuid))
         return cursor.rowcount
 
     def insert_replacement_product(self, old_product_uuid, replacement_id, quantity):

@@ -1,8 +1,8 @@
 from flask import Blueprint, jsonify, g
 from flask import current_app as ca
 
-from homework.utils import gen_x_request_id
 from homework.api import orders, products
+from homework.utils import gen_x_request_id
 
 bp = Blueprint('api', __name__, url_prefix='/api')
 
