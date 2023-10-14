@@ -29,7 +29,9 @@ create table order_products (
 
 create table replacements (
     id text primary key,
+    order_id references orders(id),
     original_id references order_products(id),
     product_id references products(id),
-    quantity integer
+    quantity integer,
+    unique (order_id, original_id)  -- each product in an order can have one replacement
 )

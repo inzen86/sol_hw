@@ -83,29 +83,36 @@ class OrderService:
         return [product.id for product in products]
 
     def update_quantity(self, order_id, product_uuid, quantity):
+        order = self.get(order_id)
+        if not order:
+            return 'Not found', 404
+        if order.status == 'PAID':
+            return 'Invalid parameters', 404
         rows_affected = self.order_repository.update_quantity(order_id, product_uuid, quantity)
         if rows_affected:
             self.connection.commit()
-        else:
-            self.connection.rollback()
-        return rows_affected
+            return 'OK', 200
+
+        self.connection.rollback()
+        return None, None
 
     def replace_product(self, order_id, product_uuid, replacement_id, replacement_quantity):
         order = self.get(order_id)
         if not order:
-            return
+            return 'Not found', 404
         if order.status != 'PAID':
-            return
+            return 'Invalid parameters', 404
 
         replacement_id_in_a_list = self.validate_product_ids((replacement_id,))
         if len(replacement_id_in_a_list) == 0:
-            return
+            return 'Invalid parameters', 400
 
         replacement_id = replacement_id_in_a_list[0]
-        rows_affected = self.order_repository.insert_replacement_product(product_uuid, replacement_id,
+        rows_affected = self.order_repository.insert_replacement_product(order_id, product_uuid, replacement_id,
                                                                          replacement_quantity)
         if rows_affected:
             self.connection.commit()
+            return 'OK', 200
         else:
             self.connection.rollback()
-        return rows_affected
+        return None, None

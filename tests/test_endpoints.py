@@ -220,7 +220,7 @@ def test_update_quantity(client):
     assert response.json[0]['quantity'] == 1
 
     response = client.patch(f'api/orders/{new_order_id}/products/{product_uuid}', json={'quantity': 12})
-    assert response.status_code == 201
+    assert response.status_code == 200
     assert response.json == 'OK'
 
     response = client.get(f'/api/orders/{new_order_id}/products')
@@ -236,16 +236,28 @@ def test_replace_product(client):
     _ = client.patch(f'api/orders/{new_order_id}', json={'status': 'PAID'})
     response = client.patch(f'api/orders/{new_order_id}/products/{product_uuid}',
                             json={"replaced_with": {"product_id": 456, "quantity": 6}})
-    assert response.status_code == 201  # TODO, kontrolli koodi
-    assert response.json == 'OK'  # TODO, Kontrolli vastust
+    assert response.status_code == 200
+    assert response.json == 'OK'
 
     response = client.get(f'/api/orders/{new_order_id}/products')
     replacement = response.json[0]['replaced_with']
     replacement.pop('id')
-    expected = {'name': 'Beer',  # TODO, check
+    expected = {'name': 'Beer',
                 'price': '2.33',
                 'product_id': 456,
                 'quantity': 6,
                 'replaced_with': None}
+    assert replacement == expected
 
+    _ = client.patch(f'api/orders/{new_order_id}/products/{product_uuid}',
+                     json={"replaced_with": {"product_id": 879, "quantity": 10}})
+
+    response = client.get(f'/api/orders/{new_order_id}/products')
+    replacement = response.json[0]['replaced_with']
+    replacement.pop('id')
+    expected = {"name": "Õllesnäkk",
+                "price": "0.42",
+                "product_id": 879,
+                "quantity": 10,
+                "replaced_with": None}
     assert replacement == expected

@@ -79,37 +79,37 @@ def add_product_to_order(order_id):
 
 
 @bp.patch('<string:order_id>/products/<string:product_uuid>')
-def update_quantity(order_id, product_uuid):
+def update_quantity_or_replace_product(order_id, product_uuid):
     connection = get_connection()
     products_service = ProductsService(connection)
     order_service = OrderService(connection, products_service)
 
-    if len(request.data) < 1:
+    if not len(request.data):
         response = jsonify('Invalid parameters')
         response.status_code = 400
         return response
 
-    product_ids = request.get_json(silent=True)
-    if not product_ids:  # json was not parsable
+    parsed_json = request.get_json(silent=True)
+    if not parsed_json:  # json was not parsable
         response = jsonify({'errors': {'detail': 'Bad Request'}})
         response.status_code = 400
         return response
 
-    quantity = request.json.get('quantity')
-    replaced_with = request.json.get('replaced_with')
+    quantity = parsed_json.get('quantity')
+    replaced_with = parsed_json.get('replaced_with')
 
-    rows_affected = 0
+    message, status_code = None, None
     if quantity:
-        rows_affected = order_service.update_quantity(order_id, product_uuid, quantity)
+        message, status_code = order_service.update_quantity(order_id, product_uuid, quantity)
     elif replaced_with:
         replacement_id = replaced_with.get('product_id')
         replacement_quantity = replaced_with.get('quantity')
-        rows_affected = order_service.replace_product(order_id, product_uuid, replacement_id, replacement_quantity)
 
-    if rows_affected:
-        response = jsonify('OK')
-        response.status_code = 201
-    else:
-        response = jsonify('Invalid parameters')
-        response.status_code = 400
+        message, status_code = order_service.replace_product(order_id, product_uuid, replacement_id,
+                                                             replacement_quantity)
+    if message is None or status_code is None:
+        abort(500)
+    response = jsonify(message)
+    response.status_code = status_code
+
     return response

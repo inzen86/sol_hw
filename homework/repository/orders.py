@@ -61,8 +61,11 @@ class OrdersRepository:
                                          (quantity, order_id, product_uuid))
         return cursor.rowcount
 
-    def insert_replacement_product(self, old_product_uuid, replacement_id, quantity):
+    def insert_replacement_product(self, order_id, old_product_uuid, replacement_id, quantity):
         replacement_uuid = str(uuid4())
-        query = 'insert into replacements (id, original_id, product_id, quantity) values (?, ?, ?, ?)'
-        cursor = self.connection.execute(query, (replacement_uuid, old_product_uuid, replacement_id, quantity))
+        query = '''
+            insert or replace into replacements (id, order_id, original_id, product_id, quantity)
+            values (?, ?, ?, ?, ?)'''
+        cursor = self.connection.execute(query,
+                                         (replacement_uuid, order_id, old_product_uuid, replacement_id, quantity))
         return cursor.rowcount
