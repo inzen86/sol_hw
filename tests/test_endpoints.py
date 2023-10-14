@@ -236,12 +236,10 @@ def test_replace_product(client):
     _ = client.patch(f'api/orders/{new_order_id}', json={'status': 'PAID'})
     response = client.patch(f'api/orders/{new_order_id}/products/{product_uuid}',
                             json={"replaced_with": {"product_id": 456, "quantity": 6}})
-    print('')
     assert response.status_code == 201  # TODO, kontrolli koodi
     assert response.json == 'OK'  # TODO, Kontrolli vastust
 
     response = client.get(f'/api/orders/{new_order_id}/products')
-    print(response.json)
     replacement = response.json[0]['replaced_with']
     replacement.pop('id')
     expected = {'name': 'Beer',  # TODO, check
