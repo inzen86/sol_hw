@@ -1,11 +1,10 @@
 import sqlite3
 
 import click
-import flask
-from flask import current_app, g
+from flask import current_app, g, Flask
 
 
-def get_connection():
+def get_connection() -> sqlite3.Connection:
     if 'db' not in g:
         g.db = sqlite3.connect(
             current_app.config['DATABASE'],
@@ -16,7 +15,7 @@ def get_connection():
     return g.db
 
 
-def close_connection(e=None):  # TODO: Not sure where e will be used, probably when closing connection due to error.
+def close_connection(e=None):
     db = g.pop('db', None)
 
     if db is not None:
@@ -26,10 +25,10 @@ def close_connection(e=None):  # TODO: Not sure where e will be used, probably w
 def init_db():
     db = get_connection()
 
-    with current_app.open_resource('db/schema.sql') as f:
+    with current_app.open_resource('repository/schema.sql') as f:
         db.executescript(f.read().decode('utf8'))
 
-    with current_app.open_resource('db/initial_products.sql') as f:
+    with current_app.open_resource('repository/initial_products.sql') as f:
         db.executescript(f.read().decode('utf8'))
 
 
@@ -39,6 +38,6 @@ def init_db_command():
     click.echo('Initialized the database')
 
 
-def init_app(app: flask.Flask):
+def init_app(app: Flask):
     app.teardown_appcontext(close_connection)
     app.cli.add_command(init_db_command)

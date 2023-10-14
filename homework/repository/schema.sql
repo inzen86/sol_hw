@@ -1,6 +1,6 @@
 drop table if exists products;
 drop table if exists orders;
-drop table if exists order_items;
+drop table if exists order_products;
 drop table if exists replacements;
 
 create table products (
@@ -19,16 +19,17 @@ create table orders (
     -- this could be saved later if performance is an issue
 );
 
-create table order_items (
+create table order_products (
     id text primary key, -- uuid from python side
     order_id references orders(id),
     product_id references products(id),
-    quantity integer not null
+    quantity integer not null,
+    unique (order_id, product_id)
 );
 
 create table replacements (
     id text primary key,
-    original_id references order_items(id),
+    original_id references order_products(id),
     product_id references products(id),
     quantity integer
 )

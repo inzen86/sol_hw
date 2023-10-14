@@ -4,6 +4,8 @@ from flask import Flask, Response
 from flask.json.provider import DefaultJSONProvider
 from flask.typing import t
 
+from homework.repository import setup_db
+
 
 def create_app(test_config=None):
     # create and configure the app
@@ -28,11 +30,11 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    from homework.blueprints import main
+    from homework.api import main
     app.register_blueprint(main.bp)
 
-    from homework.db import db
-    db.init_app(app)
+    from homework.repository import setup_db
+    setup_db.init_app(app)
 
     return app
 

@@ -1,0 +1,10 @@
+Tähelepanekud
+Kogu api on ebaturvaline
+Teadlik valik on kogu andmebaasi objetki "expose"-imine api kaudu.
+Ma ei kasuta Data trasfer objekti kuna ei selecti baasist infot mida ei kavaste edastada api kaudu
+
+uuid genereerimiseks oleks saanud registreerida funktsiooni sqlite3.Connection.create_function()
+ja kasutada seda funktsiooni default väärtuse genereerimiseks. Hetkel otsustasin genereerida uuid väärtused
+python koodis kuna see on mugavam
+
+Sissetuleva json-i kontrollimiseks peaks lisama schema ja selle valideerimise.
