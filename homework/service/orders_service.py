@@ -126,10 +126,6 @@ class OrderService:
         if not (isinstance(replacement_id, int) and isinstance(replacement_quantity, int)):
             return 'Invalid parameters', 400
 
-        # TODO: Discount ja return vjaja arvutada
-        # discount on juhul kui asendustooted on kokku kallimad kui total
-        # return on juhul kui asendustooted on kokku odavamd kui total
-
         rows_affected = self.order_repository.insert_replacement_product(order_id, product_uuid, replacement_id,
                                                                          replacement_quantity)
         if rows_affected:

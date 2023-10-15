@@ -1,4 +1,4 @@
-from flask import jsonify, Blueprint, abort
+from flask import jsonify, Blueprint
 
 from homework.repository.setup_db import get_connection
 from homework.service.products_service import ProductsService
