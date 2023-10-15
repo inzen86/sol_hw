@@ -1,5 +1,5 @@
-insert into orders (id, status, discount, paid, returns)
-values ('d4df8b90-8f4e-4fd5-bbf2-4dd6f366bb86', 'PAID', 0.0, 0.0, 0.0);
+insert into orders (id, status)
+values ('d4df8b90-8f4e-4fd5-bbf2-4dd6f366bb86', 'PAID');
 
 insert into order_products (id, order_id, product_id, quantity)
 values ('4bacc3dd-30b7-4193-bc77-16d046804d54', 'd4df8b90-8f4e-4fd5-bbf2-4dd6f366bb86', 123, 2),

@@ -15,7 +15,7 @@ def create_app(test_config=None):
         DATABASE=os.path.join(app.instance_path, 'db.sqlite')
     )
 
-    app.json_provider_class = CustJSONProvider
+    app.json = CustJSONProvider(app)
 
     if test_config is None:
         # load the instance config, if it exists, when not testing

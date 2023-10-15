@@ -11,26 +11,37 @@ bp = Blueprint('orders', __name__, url_prefix='/orders')
 def create_and_get_order():
     connection = get_connection()
     order_service = OrderService(connection)
-    return jsonify(order_service.create_and_get())
+    response = jsonify(order_service.create_and_get())
+    response.status_code = 201
+    return response
 
 
 @bp.get('<string:order_id>')
-def get_order(order_id):
+def get(order_id):
     connection = get_connection()
     order_service = OrderService(connection)
     order = order_service.get(order_id)
     if order is None:
-        response = jsonify('Not found')
-        response.status_code = 404
-        return response
+        return not_found_404()
     return jsonify(order)
 
 
 @bp.patch('<string:order_id>')
-def update_order(order_id):
+def update_stauts(order_id):
     connection = get_connection()
     order_service = OrderService(connection)
-    message, status_code = order_service.update_status(order_id, request.json['status'])
+
+    if not len(request.data):
+        return invalid_parameters_400()
+    json = request.get_json(silent=True)
+    if json is None:
+        return bad_request_400()
+    if not isinstance(json, dict):
+        response = jsonify('Invalid order status')
+        response.status_code = 400
+        return response
+
+    message, status_code = order_service.update_status(order_id, json.get('status'))
     if message is None or status_code is None:
         abort(500)
     response = jsonify(message)
@@ -42,30 +53,23 @@ def update_order(order_id):
 def get_order_products(order_id):
     connection = get_connection()
     order_service = OrderService(connection)
-    order_products = order_service.get_products(order_id)
+    order_products = order_service.get_products_if_exists(order_id)
     if order_products is None:
-        response = jsonify('Not found')
-        response.status_code = 404
-        return response
+        return not_found_404()
     return jsonify(order_products)
 
 
 @bp.post('<string:order_id>/products')
-def add_product_to_order(order_id):
+def add_products(order_id):
     connection = get_connection()
     products_service = ProductsService(connection)
     order_service = OrderService(connection, products_service)
 
-    if len(request.data) < 1:
-        response = jsonify('Invalid parameters')
-        response.status_code = 400
-        return response
-
+    if not len(request.data):
+        return invalid_parameters_400()
     product_ids = request.get_json(silent=True)
-    if not product_ids:  # json was not parsable
-        response = jsonify({'errors': {'detail': 'Bad Request'}})
-        response.status_code = 400
-        return response
+    if product_ids is None:
+        return bad_request_400()
 
     rows_affected = order_service.add_products(order_id, product_ids)
 
@@ -73,8 +77,7 @@ def add_product_to_order(order_id):
         response = jsonify('OK')
         response.status_code = 201
     else:
-        response = jsonify('Invalid parameters')
-        response.status_code = 400
+        response = invalid_parameters_400()
     return response
 
 
@@ -85,21 +88,18 @@ def update_quantity_or_replace_product(order_id, product_uuid):
     order_service = OrderService(connection, products_service)
 
     if not len(request.data):
-        response = jsonify('Invalid parameters')
-        response.status_code = 400
-        return response
-
+        return invalid_parameters_400()
     parsed_json = request.get_json(silent=True)
-    if not parsed_json:  # json was not parsable
-        response = jsonify({'errors': {'detail': 'Bad Request'}})
-        response.status_code = 400
-        return response
+    if parsed_json is None:
+        return bad_request_400()
+    if isinstance(parsed_json, dict) and not parsed_json:
+        return invalid_parameters_400()
 
     quantity = parsed_json.get('quantity')
     replaced_with = parsed_json.get('replaced_with')
 
     message, status_code = None, None
-    if quantity:
+    if quantity or quantity == 0:
         message, status_code = order_service.update_quantity(order_id, product_uuid, quantity)
     elif replaced_with:
         replacement_id = replaced_with.get('product_id')
@@ -112,4 +112,22 @@ def update_quantity_or_replace_product(order_id, product_uuid):
     response = jsonify(message)
     response.status_code = status_code
 
+    return response
+
+
+def not_found_404():
+    response = jsonify('Not found')
+    response.status_code = 404
+    return response
+
+
+def invalid_parameters_400():
+    response = jsonify('Invalid parameters')
+    response.status_code = 400
+    return response
+
+
+def bad_request_400():
+    response = jsonify({'errors': {'detail': 'Bad Request'}})
+    response.status_code = 400
     return response

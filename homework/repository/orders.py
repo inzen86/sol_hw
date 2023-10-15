@@ -15,8 +15,25 @@ class OrdersRepository:
         return order_id
 
     def find_order_by_id(self, order_id):
-        # TODO: Calculate total
-        query = 'select id, status, discount, paid, returns, 0.0 as total from orders where id = ?'
+        query = '''
+            select sub.*,
+                   sub.paid - sub.discount - sub.returns as total
+            from (select o.id,
+                         o.status,
+                         ifnull(max(repl.summed - paid.summed, 0), 0.0)                         as discount,
+                         ifnull(case when o.status = 'PAID' then paid.summed else 0.0 end, 0.0) as paid,
+                         ifnull(max(paid.summed - repl.summed, 0.0), 0.0)                       as returns
+                  from orders as o
+                  left join (select op.order_id, sum(p.price) as summed
+                             from order_products as op
+                             join products as p on op.product_id = p.id
+                             group by op.order_id) as paid on o.id = paid.order_id
+                  left join (select r.order_id, sum(p.price * r.quantity) as summed
+                             from replacements as r
+                             join products as p on r.product_id = p.id
+                             group by r.order_id) as repl on o.id = repl.order_id
+                             where o.id = ? ) as sub
+        '''
         return self.connection.execute(query, (order_id,)).fetchone()
 
     def find_order_products_by_order_id(self, order_id):

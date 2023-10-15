@@ -70,9 +70,9 @@ def test_get_order(client):
     expected = {
         'amount': {
             'discount': '0.00',
-            'paid': '0.00',
+            'paid': '1336.57',
             'returns': '0.00',
-            'total': '0.00'},
+            'total': '1336.57'},
         'id': 'd4df8b90-8f4e-4fd5-bbf2-4dd6f366bb86',
         'products': [
             {'id': '4bacc3dd-30b7-4193-bc77-16d046804d54',

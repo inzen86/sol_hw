@@ -11,12 +11,7 @@ create table products (
 
 create table orders (
     id text primary key,
-    status text not null default 'NEW', -- [NEW, PAID], could use separate table of possible statuses with many to one relation
-    discount real default 0,
-    paid real default 0,
-    returns real default 0
-    -- total will be calculated on the fly for simplicity and consistency,
-    -- this could be saved later if performance is an issue
+    status text not null default 'NEW' -- [NEW, PAID]
 );
 
 create table order_products (
