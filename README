@@ -21,7 +21,7 @@ This is a fictional 3rd party API that has no documentation and there was no acc
 
 
 Mõned tähelepanekud ja mõtted:
-+ Kuna see app kaotab oma baasi seisu peale restarti ei hakka ma kergitama autostart teemat pikalt aga soovitaksin kasutada konteineri haldus süsteemi nagu kubernetes, docker swarm või docker-compose.
+- Kuna see app kaotab oma baasi seisu peale restarti ei hakka ma kergitama autostart teemat pikalt aga soovitaksin kasutada konteineri haldus süsteemi nagu kubernetes, docker swarm või docker-compose.
 - Kogu api on ebaturvaline kuna ei toimu mingit autentimist.
 - Andmebaasi objetki tagastamine service klassi ja data transfer objekti mitte kasutamine on teadlik valik. 
 - Sissetuleva json-i kontrollimiseks peaks looma schema ja sellega valideerima. Ei hakanud seda proovitöö jaoks tegema.
