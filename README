@@ -19,10 +19,9 @@ This is a fictional 3rd party API that has no documentation and there was no acc
    - Kui soovid konteinerit käivitada nii, et see töötaks taustas kasuta sellist käsku:
      - "docker run -d -p 5000:8000 homework"
 
-P.S. Kuna see app kaotab oma baasi seisu peale restarti ei hakka ma kergitama autostart teemat pikalt aga soovitaksin kasutada konteineri haldus süsteemi nagu kubernetes, docker swarm või docker-compose.
-
 
 Mõned tähelepanekud ja mõtted:
++ Kuna see app kaotab oma baasi seisu peale restarti ei hakka ma kergitama autostart teemat pikalt aga soovitaksin kasutada konteineri haldus süsteemi nagu kubernetes, docker swarm või docker-compose.
 - Kogu api on ebaturvaline kuna ei toimu mingit autentimist.
 - Andmebaasi objetki tagastamine service klassi ja data transfer objekti mitte kasutamine on teadlik valik. 
 - Sissetuleva json-i kontrollimiseks peaks looma schema ja sellega valideerima. Ei hakanud seda proovitöö jaoks tegema.
