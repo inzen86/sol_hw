@@ -1,25 +1,30 @@
+## Homework
+This is a fictional 3rd party API that has no documentation and there was no access to it’s source code, only a reference api to try.
+
+### Nõuded koodi käivitamiseks:
+- Docker
+
+### Kuidas käivitada(juhend kliendile):
+1. Masinas kus soovid käivitada on olemas Docker. Docker Deskopiga saab windowsi all. Mac-i kohta kahjuks ei tea.
+2. Lae alla lähtekood: https://github.com/inzen86/sol_hw  Zip-ina "<> Code" nupu alt või git clone. Repol on ainult 1 haru.
+3. Navigeeri terminali aknaga koodi kausta, kaust kus on "Dockerfile"
+4. Kasuta järgmis käsku docker image ehitamiseks: "docker build -t homework ."
+5. Kasuta seda käsku image-i käivitamiseks: 
+   - "docker run --rm -it -p 8080:8080 homework"
+      - "--rm" - kustutab ära konteineri kui peatad selle, see on testimiseks eelkõige
+      - "-it" - tekitab interaktiivse terminali, siis saab Ctrl+C vajutades konteineri seisata.
+      - "-p 5000:8080" - määrab pordi mille kaudu saab konteineris olevale API-le ligi.
+        - selles näites 5000 on port mida kasutaskid api-le requeste saates, seda võib vastavalt vajadusele muuta.
+        - 8080 - on konteineri sisemine port millel töötab gunicorn server mis vahendab suhtlemist API-ga
+   - Kui soovid konteinerit käivitada nii, et see töötaks taustas kasuta sellist käsku:
+     - "docker run -d -p 5000:8000 homework"
+
+P.S. Kuna see app kaotab oma baasi seisu peale restarti ei hakka ma kergitama autostart teemat pikalt aga soovitaksin kasutada konteineri haldus süsteemi nagu kubernetes, docker swarm või docker-compose.
 
 
-TODO: docker juhend.
-TODO: Porti saab muuta dockeri parameetriga. Kui väga vaja saab dockerfailis käsku muuta.
-
-Tähelepanekud
-Kogu api on ebaturvaline
-
-Teadlik valik on kogu andmebaasi objetki "expose"-imine api kaudu.
-Ma ei kasuta Data trasfer objekti kuna ei selecti baasist infot mida ei kavaste edastada api kaudu
-
-Sissetuleva json-i kontrollimiseks peaks lisama schema ja sellega valideerima.
-
-Märkasin, et kui saata HEAD request solutional api-sse siis saadetakse headerid ära ja request jääb õhku,
-curl ei lõpeta vaid jääb ootama midagi. Seda omadust ma kopeerida ei ürita.
-
-Windowsi all saadaolev curl.exe (erinev curl aliasest powershellis) ei tööta osade näidis-endpointidega.
-Esialgu tundub et juhul kui on json body. Veakood on sama kui oleks vigane json.
-
-Võimalik bugi näidis-api-s. Kauba kogust on võimalik nulliks panna, aga toode jääb tellimuse külge.
-
-Otsustasin 'discount', 'paid', 'returns' ja 'total' arvutada iga requestiga uuesti.
-See teeb koodi veidi lihtsamaks. Kui tulevikus on vaja jõudlust parandada siis saab need salvestada orders tabelisse.
-
-Algselt mul oli mõttes kasutada Singleton mustrit service klassides et oleks alati üks service objekt ühe servici jaoks.
+Mõned tähelepanekud ja mõtted:
+- Kogu api on ebaturvaline kuna ei toimu mingit autentimist.
+- Andmebaasi objetki tagastamine service klassi ja data transfer objekti mitte kasutamine on teadlik valik. 
+- Sissetuleva json-i kontrollimiseks peaks looma schema ja sellega valideerima. Ei hakanud seda proovitöö jaoks tegema.
+- Otsustasin 'discount', 'paid', 'returns' ja 'total' arvutada iga requestiga uuesti. See teeb koodi veidi lihtsamaks. Kui tulevikus on vaja jõudlust parandada siis saab need salvestada orders tabelisse. 
+- Hetkel iga request endpoindi pihta teeb uued instanced service klassidest. Kuna tegemist on väikse projektiga, siis ei näinud mõtet raamistiku kasutada, mis automaatselt objektidest singletonid looks. Variant oleks ka teha nt Factory mis rakenduse käivitumise ajal ehitab kõik vajalikud dependencyd valmis.
