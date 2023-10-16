@@ -11,11 +11,11 @@ def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__, static_folder=None)
     app.config.from_mapping(
-        SECRET_KEY='dev',
-        DATABASE=os.path.join(app.instance_path, 'db.sqlite')
+        DATABASE=os.path.join(app.instance_path, ':memory:')
     )
 
     app.json = CustJSONProvider(app)
+    app.url_map.strict_slashes = False
 
     if test_config is None:
         # load the instance config, if it exists, when not testing

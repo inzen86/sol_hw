@@ -1,4 +1,5 @@
 import traceback
+
 from flask import Blueprint, jsonify, g
 from flask import current_app
 
@@ -32,7 +33,6 @@ def method_not_allowed(error):
 
 @bp.before_app_request
 def add_x_request_id_to_g():
-    # Adding x-request-id to g, so it could be used in endpoints.
     g.x_request_id = gen_x_request_id()
 
 

@@ -1,25 +1,25 @@
+
+
+TODO: docker juhend.
+TODO: Porti saab muuta dockeri parameetriga. Kui väga vaja saab dockerfailis käsku muuta.
+
 Tähelepanekud
 Kogu api on ebaturvaline
+
 Teadlik valik on kogu andmebaasi objetki "expose"-imine api kaudu.
 Ma ei kasuta Data trasfer objekti kuna ei selecti baasist infot mida ei kavaste edastada api kaudu
 
-uuid genereerimiseks oleks saanud registreerida funktsiooni sqlite3.Connection.create_function()
-ja kasutada seda funktsiooni default väärtuse genereerimiseks. Hetkel otsustasin genereerida uuid väärtused
-python koodis kuna see on mugavam
+Sissetuleva json-i kontrollimiseks peaks lisama schema ja sellega valideerima.
 
-Sissetuleva json-i kontrollimiseks peaks lisama schema ja selle valideerimise.
-
-Märkasin, et kui saada HEAD request solutional api-sse siis saadetakse headerid ära ja request jääb õhku,
+Märkasin, et kui saata HEAD request solutional api-sse siis saadetakse headerid ära ja request jääb õhku,
 curl ei lõpeta vaid jääb ootama midagi. Seda omadust ma kopeerida ei ürita.
 
-Windowsi all saadaolev curl.exe (erinev curl aliasest powershellis) ei tööta osade näidis-endpointidega,
-esialgu tundub et juhul kui on json body. Veakood on sama kui oleks vigane json.
+Windowsi all saadaolev curl.exe (erinev curl aliasest powershellis) ei tööta osade näidis-endpointidega.
+Esialgu tundub et juhul kui on json body. Veakood on sama kui oleks vigane json.
 
 Võimalik bugi näidis-api-s. Kauba kogust on võimalik nulliks panna, aga toode jääb tellimuse külge.
 
-Hetkel toimub 'total' ja 'paid' summade arvutamine iga requestiga uuesti, kui requestide arv on suur ja on reaalselt
-vaja arvutada 'discount'-e siis peaks need numbri, maksmise e. status uuendamise, hetkel salvestama. Usun ei peoovitöö
-jaosk ei ole vaja seda implementeerida.
-
 Otsustasin 'discount', 'paid', 'returns' ja 'total' arvutada iga requestiga uuesti.
 See teeb koodi veidi lihtsamaks. Kui tulevikus on vaja jõudlust parandada siis saab need salvestada orders tabelisse.
+
+Algselt mul oli mõttes kasutada Singleton mustrit service klassides et oleks alati üks service objekt ühe servici jaoks.

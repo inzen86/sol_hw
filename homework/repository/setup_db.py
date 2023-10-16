@@ -22,22 +22,22 @@ def close_connection(e=None):
         db.close()
 
 
-def init_db():
-    db = get_connection()
+def init_db(app):
+    with app.app_context():
+        db = get_connection()
 
-    with current_app.open_resource('repository/schema.sql') as f:
-        db.executescript(f.read().decode('utf8'))
+        tables_exist = db.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='products'").fetchone()
+        if tables_exist:
+            return
 
-    with current_app.open_resource('repository/initial_products.sql') as f:
-        db.executescript(f.read().decode('utf8'))
-
-
-@click.command('init-db')
-def init_db_command():
-    init_db()
-    click.echo('Initialized the database')
+        click.echo('Initializing database')
+        with current_app.open_resource('repository/schema.sql') as f:
+            db.executescript(f.read().decode('utf8'))
+        with current_app.open_resource('repository/initial_products.sql') as f:
+            db.executescript(f.read().decode('utf8'))
+        click.echo('database ready')
 
 
 def init_app(app: Flask):
+    init_db(app)
     app.teardown_appcontext(close_connection)
-    app.cli.add_command(init_db_command)

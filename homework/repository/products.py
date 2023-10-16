@@ -1,5 +1,4 @@
 class ProductsRepository:
-    # TODO: Singleton
     def __init__(self, connection):
         self.connection = connection
 
