@@ -21,7 +21,6 @@ def app():
     })
 
     with app.app_context():
-        init_db()
         get_connection().executescript(_data_sql)
 
     yield app
@@ -33,11 +32,6 @@ def app():
 @pytest.fixture()
 def client(app):
     return app.test_client(use_cookies=False)
-
-
-@pytest.fixture()
-def runner(app):
-    return app.test_cli_runner()
 
 
 def test_get_products(client):

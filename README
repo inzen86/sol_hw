@@ -7,7 +7,8 @@ This is a fictional 3rd party API that has no documentation and there was no acc
 
 ### Kuidas käivitada(juhend kliendile):
 1. Masinas kus soovid käivitada on olemas Docker. Docker Deskopiga saab windowsi all. Mac-i kohta kahjuks ei tea.
-2. Lae alla lähtekood: https://github.com/inzen86/sol_hw  Zip-ina "<> Code" nupu alt või git clone. Repol on ainult 1 haru.
+2. Lae alla lähtekood: https://github.com/inzen86/sol_hw  Zip-ina "<> Code" nupu alt või git clone.
+   - Näiteks: "git clone https://github.com/inzen86/sol_hw.git"
 3. Navigeeri terminali aknaga koodi kausta, kaust kus on "Dockerfile"
    - Näiteks: "cd sol_hw"
 4. Kasuta järgmis käsku docker image ehitamiseks: "docker build -t homework ."
